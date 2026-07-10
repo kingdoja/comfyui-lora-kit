@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# Node / frontend
+node_modules/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+
+# ComfyUI runtime outputs
+input/
+output/
+temp/
+user/
+models/
+*.ckpt
+*.safetensors
+*.pt
+*.pth
+*.onnx
+
+# Training artifacts and caches
+logs/
+runs/
+wandb/
+tensorboard/
+huggingface/
+.cache/
+*.tfevents*
+
+# Training/source images and design binaries
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.psd
+*.tif
+*.tiff
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

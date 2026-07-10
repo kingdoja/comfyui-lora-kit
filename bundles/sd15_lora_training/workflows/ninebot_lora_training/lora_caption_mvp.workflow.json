@@ -1,0 +1,190 @@
+{
+  "last_node_id": 3,
+  "last_link_id": 4,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoRA Caption Load",
+      "pos": [
+        40,
+        120
+      ],
+      "size": [
+        420,
+        100
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "Name list",
+          "type": "STRING",
+          "links": [
+            1
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "path",
+          "type": "STRING",
+          "links": [
+            2
+          ],
+          "slot_index": 1
+        },
+        {
+          "name": "Image list",
+          "type": "IMAGE",
+          "links": [
+            3
+          ],
+          "slot_index": 2
+        }
+      ],
+      "title": "1. Load training images",
+      "properties": {
+        "Node name for S&R": "LoRA Caption Load"
+      },
+      "widgets_values": [
+        "C:\\Users\\ninebot\\ComfyUI_windows_portable\\ComfyUI\\ninebot_lora_training_bundle\\datasets\\offroad_vehicle_caption_scratch_v001\\10_ninebot_atv_style"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "WD14Tagger|pysssss",
+      "pos": [
+        520,
+        80
+      ],
+      "size": [
+        400,
+        260
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            4
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "2. Auto tag images",
+      "properties": {
+        "Node name for S&R": "WD14Tagger|pysssss"
+      },
+      "widgets_values": [
+        "wd-v1-4-moat-tagger-v2",
+        0.35,
+        0.85,
+        true,
+        false,
+        "text, watermark, signature, logo"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "LoRA Caption Save",
+      "pos": [
+        980,
+        125
+      ],
+      "size": [
+        380,
+        160
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "namelist",
+          "type": "STRING",
+          "link": 1
+        },
+        {
+          "name": "path",
+          "type": "STRING",
+          "link": 2
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 4
+        }
+      ],
+      "outputs": [],
+      "title": "3. Save caption txt",
+      "properties": {
+        "Node name for S&R": "LoRA Caption Save"
+      },
+      "widgets_values": [
+        "ninebot_atv_style"
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      3,
+      0,
+      "STRING"
+    ],
+    [
+      2,
+      1,
+      1,
+      3,
+      1,
+      "STRING"
+    ],
+    [
+      3,
+      1,
+      2,
+      2,
+      0,
+      "IMAGE"
+    ],
+    [
+      4,
+      2,
+      0,
+      3,
+      2,
+      "STRING"
+    ]
+  ],
+  "groups": [
+    {
+      "title": "1. Caption Dataset",
+      "bounding": [
+        20,
+        40,
+        1370,
+        330
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

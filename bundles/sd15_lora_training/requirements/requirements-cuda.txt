@@ -1,0 +1,41 @@
+# CUDA LoRA training dependencies for the Ninebot ComfyUI LoRA bundle.
+#
+# Install this on the target CUDA ComfyUI machine, not on the Mac/MPS authoring machine.
+# Recommended target:
+# - Python 3.10 or 3.11
+# - NVIDIA GPU
+# - PyTorch CUDA already installed and working
+
+accelerate==0.23.0
+diffusers[torch]==0.21.2
+transformers==4.36.2
+huggingface-hub==0.20.3
+
+ftfy==6.1.1
+opencv-python
+einops==0.6.1
+pytorch-lightning
+tensorboard
+safetensors
+altair
+easygui
+toml
+voluptuous
+open-clip-torch==2.20.0
+
+lion-pytorch
+dadaptation
+prodigyopt
+lycoris-lora
+
+rich
+pandas
+scipy
+requests
+pillow
+numpy<2
+
+# CUDA-only training helpers.
+# These must match the target machine's torch/CUDA version.
+xformers
+bitsandbytes

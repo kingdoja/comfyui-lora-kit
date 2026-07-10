@@ -1,0 +1,25 @@
+# Windows / portable ComfyUI local dependency set for this RTX 4080 machine.
+#
+# Keep ComfyUI's modern dependencies intact. Do not install the bundle's old
+# pinned transformers or huggingface-hub versions into this ComfyUI.
+
+accelerate>=0.23,<1
+diffusers[torch]>=0.21
+ftfy>=6.1
+opencv-python>=4.8
+pytorch-lightning>=2.2
+tensorboard
+altair
+easygui
+toml
+voluptuous
+open-clip-torch>=2.20
+
+lion-pytorch
+dadaptation
+prodigyopt
+lycoris-lora
+
+onnxruntime
+pandas
+wandb

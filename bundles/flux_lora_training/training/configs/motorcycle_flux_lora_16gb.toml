@@ -1,0 +1,41 @@
+# Conservative FLUX LoRA project settings for RTX 4080 16GB.
+# The actual sd-scripts dataset config is motorcycle_flux_dataset.toml.
+
+[project]
+name = "ninebot_motorcycle_flux_v001"
+trigger_token = "ninebot_motorcycle_style"
+base_model = "flux1-dev"
+output_name = "ninebot_motorcycle_flux_v001"
+output_dir = "C:/Users/ninebot/ComfyUI_windows_portable/ComfyUI/models/loras"
+
+[models]
+flux = "C:/Users/ninebot/ComfyUI_windows_portable/ComfyUI/models/diffusion_models/flux1-dev.safetensors"
+clip_l = "C:/Users/ninebot/ComfyUI_windows_portable/ComfyUI/models/text_encoders/clip_l_sd_scripts.safetensors"
+t5xxl = "C:/Users/ninebot/ComfyUI_windows_portable/ComfyUI/models/text_encoders/t5xxl_fp16.safetensors"
+ae = "C:/Users/ninebot/ComfyUI_windows_portable/ComfyUI/models/vae/ae.safetensors"
+
+[dataset]
+dataset_config = "C:/Users/ninebot/ComfyUI_windows_portable/ComfyUI/ninebot_flux_lora_training_bundle/training/configs/motorcycle_flux_dataset.toml"
+caption_extension = ".txt"
+resolution = 768
+batch_size = 1
+
+[network]
+module = "networks.lora_flux"
+rank = 16
+alpha = 16
+
+[training]
+mixed_precision = "bf16"
+optimizer = "adamw8bit"
+learning_rate = 0.0001
+max_train_steps = 1000
+save_every_n_steps = 250
+cache_latents = true
+cache_text_encoder_outputs = true
+fp8_base_unet = true
+blocks_to_swap = 18
+guidance_scale = 1.0
+timestep_sampling = "shift"
+discrete_flow_shift = 3.1582
+model_prediction_type = "raw"

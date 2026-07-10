@@ -1,0 +1,23 @@
+[general]
+shuffle_caption = false
+caption_extension = ".txt"
+keep_tokens = 1
+
+[[datasets]]
+resolution = [768, 768]
+batch_size = 1
+enable_bucket = true
+bucket_no_upscale = false
+min_bucket_reso = 256
+max_bucket_reso = 1024
+bucket_reso_steps = 64
+
+  [[datasets.subsets]]
+  image_dir = "C:/Users/ninebot/ComfyUI_windows_portable/ComfyUI/user/ninebot_flux_lora_training/datasets/motorcycle_flux_v001/style"
+  num_repeats = 10
+  class_tokens = "ninebot_motorcycle_style electric motorcycle"
+
+  [[datasets.subsets]]
+  image_dir = "C:/Users/ninebot/ComfyUI_windows_portable/ComfyUI/user/ninebot_flux_lora_training/datasets/motorcycle_flux_v001/views"
+  num_repeats = 6
+  class_tokens = "ninebot_motorcycle_style electric motorcycle"

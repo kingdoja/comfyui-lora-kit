@@ -1,0 +1,10 @@
+﻿Put motorcycle training images here.
+
+Use matching caption files:
+
+0001.png
+0001.txt
+
+Every caption should include:
+
+ninebot_motorcycle_style

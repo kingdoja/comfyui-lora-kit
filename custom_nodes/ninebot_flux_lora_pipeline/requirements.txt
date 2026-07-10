@@ -1,0 +1,2 @@
+# This wrapper node does not add Python package dependencies.
+# Install requirements from ComfyUI-FluxTrainer, ComfyUI-Florence2, and ComfyUI-WD14-Tagger.

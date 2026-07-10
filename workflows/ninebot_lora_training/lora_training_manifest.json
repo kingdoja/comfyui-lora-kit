@@ -1,0 +1,112 @@
+{
+  "caption_workflow": "lora_caption_mvp.workflow.json",
+  "training_workflow": "lora_training_mvp.workflow.json",
+  "description": "Ninebot LoRA training MVP workflows.",
+  "datasets": {
+    "caption_scratch": {
+      "image_folder": "/Users/ninebot/Documents/ComfyUI/user/ninebot_lora_training/datasets/offroad_vehicle_caption_scratch_v001/10_ninebot_atv_style",
+      "purpose": "Run auto-captioning; starts without .txt files."
+    },
+    "training_ready": {
+      "data_path": "/Users/ninebot/Documents/ComfyUI/user/ninebot_lora_training/datasets/offroad_vehicle_smoke_v001",
+      "image_folder": "/Users/ninebot/Documents/ComfyUI/user/ninebot_lora_training/datasets/offroad_vehicle_smoke_v001/10_ninebot_atv_style",
+      "purpose": "Run training smoke test; already includes .txt captions."
+    }
+  },
+  "caption_parameters": {
+    "caption_load_path": {
+      "workflow_node": 1,
+      "widget_index": 0
+    },
+    "tagger_model": {
+      "workflow_node": 2,
+      "widget_index": 0
+    },
+    "tag_threshold": {
+      "workflow_node": 2,
+      "widget_index": 1
+    },
+    "character_threshold": {
+      "workflow_node": 2,
+      "widget_index": 2
+    },
+    "exclude_tags": {
+      "workflow_node": 2,
+      "widget_index": 5
+    },
+    "caption_prefix": {
+      "workflow_node": 3,
+      "widget_index": 0,
+      "default": "ninebot_atv_style"
+    }
+  },
+  "training_parameters": {
+    "checkpoint": {
+      "workflow_node": 1,
+      "widget_index": 0
+    },
+    "network_dim": {
+      "workflow_node": 1,
+      "widget_index": 3
+    },
+    "network_alpha": {
+      "workflow_node": 1,
+      "widget_index": 4
+    },
+    "resolution": {
+      "workflow_node": 1,
+      "widget_index": 5
+    },
+    "data_path": {
+      "workflow_node": 1,
+      "widget_index": 6,
+      "note": "This is the parent folder that contains 10_ninebot_atv_style, not the image folder itself."
+    },
+    "batch_size": {
+      "workflow_node": 1,
+      "widget_index": 7
+    },
+    "epochs": {
+      "workflow_node": 1,
+      "widget_index": 8
+    },
+    "save_every_n_epochs": {
+      "workflow_node": 1,
+      "widget_index": 9
+    },
+    "text_encoder_lr": {
+      "workflow_node": 1,
+      "widget_index": 12
+    },
+    "unet_lr": {
+      "workflow_node": 1,
+      "widget_index": 13
+    },
+    "lr_scheduler": {
+      "workflow_node": 1,
+      "widget_index": 14
+    },
+    "optimizer": {
+      "workflow_node": 1,
+      "widget_index": 16,
+      "available_in_node": [
+        "AdamW8bit",
+        "DAdaptation",
+        "Lion",
+        "Lion8bit",
+        "SGDNesterov8bit",
+        "AdaFactor",
+        "prodigy"
+      ]
+    },
+    "output_name": {
+      "workflow_node": 1,
+      "widget_index": 17
+    },
+    "output_dir": {
+      "workflow_node": 1,
+      "widget_index": 21
+    }
+  },
+  "current_blocker": "Training dependencies are not fully installed in the ComfyUI venv. Caption workflow can run; training workflow is prepared but should not be queued until the training dependency plan is executed."
+}

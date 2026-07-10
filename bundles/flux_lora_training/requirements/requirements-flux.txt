@@ -1,0 +1,11 @@
+# Support packages for the Ninebot FLUX bundle.
+# Keep the existing ComfyUI torch/transformers stack intact.
+
+accelerate>=0.34,<1
+diffusers>=0.38
+peft>=0.14
+toml
+rich
+huggingface-hub>=1.0
+imagesize
+lycoris-lora

@@ -1,0 +1,58 @@
+{
+  "dataset_id": "offroad_vehicle_smoke_v001",
+  "purpose": "smoke_test",
+  "trigger_word": "ninebot_atv_style",
+  "training_folder": "10_ninebot_atv_style",
+  "repeat_count": 10,
+  "image_count": 10,
+  "resolution": "512x512",
+  "caption_extension": ".txt",
+  "quality_note": "This dataset contains generated and augmented images. It is only for validating the LoRA training workflow.",
+  "source_files": [
+    {
+      "file": "10_ninebot_atv_style/0001.png",
+      "source": "input/ninebot_img2img_source.png"
+    },
+    {
+      "file": "10_ninebot_atv_style/0002.png",
+      "source": "output/ninebot_lora_generation/img2img_canny_00001_.png"
+    },
+    {
+      "file": "10_ninebot_atv_style/0003.png",
+      "source": "output/ninebot_lora_generation/img2img_none_00001_.png"
+    },
+    {
+      "file": "10_ninebot_atv_style/0004.png",
+      "source": "output/ninebot_lora_generation/img2img_canny_00002_.png"
+    },
+    {
+      "file": "10_ninebot_atv_style/0005.png",
+      "source": "output/ninebot_lora_generation/txt2img_00001_.png"
+    },
+    {
+      "file": "10_ninebot_atv_style/0006.png",
+      "source": "input/ninebot_img2img_source.png",
+      "augmentation": "horizontal_flip"
+    },
+    {
+      "file": "10_ninebot_atv_style/0007.png",
+      "source": "output/ninebot_lora_generation/img2img_canny_00001_.png",
+      "augmentation": "horizontal_flip"
+    },
+    {
+      "file": "10_ninebot_atv_style/0008.png",
+      "source": "output/ninebot_lora_generation/img2img_none_00001_.png",
+      "augmentation": "horizontal_flip"
+    },
+    {
+      "file": "10_ninebot_atv_style/0009.png",
+      "source": "input/ninebot_img2img_source.png",
+      "augmentation": "center_crop_448_resize_512"
+    },
+    {
+      "file": "10_ninebot_atv_style/0010.png",
+      "source": "output/ninebot_lora_generation/img2img_none_00001_.png",
+      "augmentation": "center_crop_448_resize_512"
+    }
+  ]
+}

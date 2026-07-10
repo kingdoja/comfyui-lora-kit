@@ -1,0 +1,91 @@
+{
+  "last_node_id": 2,
+  "last_link_id": 0,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "Lora Training in Comfy (Advanced)",
+      "pos": [
+        60,
+        110
+      ],
+      "size": [
+        620,
+        560
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "1. Train LoRA smoke test",
+      "properties": {
+        "Node name for S&R": "Lora Training in Comfy (Advanced)"
+      },
+      "widgets_values": [
+        "v1-5-pruned-emaonly.safetensors",
+        "No",
+        "networks.lora",
+        16,
+        8,
+        512,
+        "/Users/ninebot/Documents/ComfyUI/user/ninebot_lora_training/datasets/offroad_vehicle_smoke_v001",
+        1,
+        1,
+        1,
+        1,
+        0,
+        0.00005,
+        0.0001,
+        "constant",
+        1,
+        "Lion",
+        "ninebot_atv_style_smoke",
+        "lora",
+        0,
+        2,
+        "models/loras"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "Tensorboard Access",
+      "pos": [
+        760,
+        110
+      ],
+      "size": [
+        260,
+        80
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "2. Optional Tensorboard",
+      "properties": {
+        "Node name for S&R": "Tensorboard Access"
+      },
+      "widgets_values": []
+    }
+  ],
+  "links": [],
+  "groups": [
+    {
+      "title": "2. Train LoRA",
+      "bounding": [
+        20,
+        40,
+        1040,
+        680
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}
