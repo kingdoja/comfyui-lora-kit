@@ -1,53 +1,67 @@
-# Ninebot ComfyUI LoRA Kit
+# ComfyUI LoRA Kit
 
-这个仓库整理了 Ninebot 在 ComfyUI 里的 LoRA 训练、生图和打标工作流交付物，目标是把自研节点、workflow、训练配置和迁移文档从完整 ComfyUI 安装中拆出来，方便在新机器或 GitHub 仓库中维护。
+ComfyUI LoRA Kit is a curated project package for LoRA training, captioning, workflow delivery, and custom-node integration in ComfyUI. It separates reusable project assets from a full local ComfyUI installation so the workflows, training configs, scripts, and documentation can be reviewed, maintained, and moved between machines cleanly.
 
-## Contents
+The repository demonstrates an end-to-end AI image workflow implementation: dataset preparation, caption sidecars, SD1.5 training migration, FLUX LoRA training setup, workflow JSON delivery, and a custom ComfyUI node pipeline with backend routes, frontend behavior, and tests.
+
+## Project Highlights
+
+- Custom ComfyUI node package for a FLUX LoRA training pipeline.
+- Frontend extension coverage for widget behavior, inline editing, upload handling, advanced settings, and payload validation.
+- Backend pipeline and route tests for the custom node package.
+- FLUX training bundle with setup scripts, training configs, model-source notes, and dataset caption guidance.
+- SD1.5 legacy training bundle with caption examples, dependency notes, and workflow migration material.
+- ComfyUI workflow JSON files for captioning, training, LoRA testing, and FLUX image generation.
+- Clear separation between lightweight reproducible project assets and large local-only runtime artifacts.
+
+## Repository Layout
 
 ```text
 custom_nodes/
-  ninebot_flux_lora_pipeline/      # 自研 FLUX LoRA 一体化训练节点
+  <flux_lora_pipeline>/        # Custom ComfyUI node package
 workflows/
-  ninebot_flux_lora_training/      # FLUX 图生图 / LoRA 测试 workflow
-  ninebot_lora_training/           # SD1.5 打标 + LoRA 训练 MVP workflow
+  <flux_training_workflows>/   # FLUX image generation and LoRA test workflows
+  <sd15_training_workflows>/   # SD1.5 captioning and training workflows
 bundles/
-  flux_lora_training/              # FLUX 训练脚本、配置、安装说明和轻量示例
-  sd15_lora_training/              # 旧版 SD1.5 训练迁移包的轻量整理版
+  flux_lora_training/          # FLUX scripts, configs, docs, and examples
+  sd15_lora_training/          # SD1.5 migration bundle and lightweight examples
 docs/
-  dev_docs/                        # 开发、迁移、交付说明
-  superpowers/                     # 相关设计和执行计划
+  dev_docs/                    # Architecture, migration, and delivery notes
+  superpowers/                 # Design specs and execution plans
 ```
 
 ## What Is Included
 
-- `NinebotFluxLoRATrainPipeline` 自定义节点代码、前端扩展和测试。
-- FLUX LoRA 训练配置、PowerShell 辅助脚本、模型来源说明和数据集 caption 规范。
-- SD1.5/旧版打标与 LoRA 训练 workflow、安装说明、依赖清单和轻量 caption 示例。
-- 可导入 ComfyUI 的 workflow JSON，包括打标、训练、FLUX LoRA 测试和 FLUX 图生图。
+- A custom ComfyUI node package with Python backend code, browser-side extension code, and focused tests.
+- FLUX LoRA training configuration, PowerShell setup helpers, model-source documentation, and captioning guidance.
+- SD1.5 captioning and LoRA training workflows, dependency notes, and sample caption sidecars.
+- Importable ComfyUI workflow JSON for captioning, training, FLUX LoRA testing, and FLUX text-to-image generation.
+- Implementation notes that document the migration path from a local working environment into a portable repository.
 
 ## What Is Not Included
 
-仓库刻意不提交以下内容：
+The repository intentionally excludes large or machine-specific artifacts:
 
-- ComfyUI 主程序源码。
-- checkpoint、LoRA、ONNX、safetensors 等模型文件。
-- 原始训练图片、PSD、输出图和 TensorBoard 日志。
-- 第三方自定义节点的大体积 vendored 副本。
-- Python 虚拟环境、Hugging Face cache、`__pycache__` 和本机运行缓存。
+- ComfyUI core source code.
+- Checkpoints, LoRA files, ONNX files, safetensors files, and other model weights.
+- Original training images, PSD files, generated outputs, and TensorBoard logs.
+- Vendored copies of large third-party custom nodes.
+- Python virtual environments, Hugging Face caches, `__pycache__`, and local runtime caches.
 
-第三方节点和模型依赖见 [THIRD_PARTY.md](THIRD_PARTY.md)。
+Third-party node and model dependencies are documented in [THIRD_PARTY.md](THIRD_PARTY.md).
 
 ## Install Into ComfyUI
 
-1. 把 `custom_nodes/ninebot_flux_lora_pipeline` 复制到目标 ComfyUI 的 `custom_nodes/`。
-2. 按 [THIRD_PARTY.md](THIRD_PARTY.md) 安装依赖的第三方自定义节点和模型文件。
-3. 重启 ComfyUI。
-4. 从 `workflows/` 或 `bundles/*/workflows/` 导入对应 workflow JSON。
-5. 先使用 dry run 或 smoke workflow 验证路径、caption sidecar 和模型位置，再启动正式训练。
+1. Copy the custom node package from `custom_nodes/` into the target ComfyUI `custom_nodes/` directory.
+2. Install the required third-party custom nodes and model files listed in [THIRD_PARTY.md](THIRD_PARTY.md).
+3. Restart ComfyUI.
+4. Import the workflow JSON files from `workflows/` or `bundles/*/workflows/`.
+5. Run a dry run or smoke workflow first to validate paths, caption sidecars, and model locations.
+6. Start training only after the environment check passes.
 
 ## FLUX Training Start Points
 
-优先阅读：
+Recommended documentation:
 
 ```text
 bundles/flux_lora_training/docs/install.md
@@ -56,31 +70,30 @@ bundles/flux_lora_training/docs/dataset_caption_guide.md
 bundles/flux_lora_training/docs/model_sources.md
 ```
 
-常用入口：
+Common setup commands:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File bundles\flux_lora_training\requirements\setup_flux_training.ps1
 powershell -ExecutionPolicy Bypass -File bundles\flux_lora_training\training\scripts\setup_flux_trainer.ps1
 ```
 
-## SD1.5 / Legacy Start Points
+## SD1.5 Legacy Start Points
 
-旧版打标 + LoRA 训练迁移资料在：
+The SD1.5 migration bundle includes installation notes, workflow usage notes, dependency lists, and lightweight caption examples:
 
 ```text
 bundles/sd15_lora_training/docs/install.md
 bundles/sd15_lora_training/docs/usage.md
-bundles/sd15_lora_training/workflows/ninebot_lora_training/
+bundles/sd15_lora_training/workflows/
 ```
 
-这个目录只保留了轻量文本、workflow、依赖和示例 caption。需要的 WD14、captioning、Lora-Training-in-Comfy 等第三方节点需要在目标 ComfyUI 中单独安装。
+The bundle keeps only portable text, workflow, dependency, and example-caption assets. WD14, captioning nodes, LoRA training nodes, and other third-party components should be installed separately in the target ComfyUI environment.
 
-## Suggested Repository Name
+## Engineering Notes
 
-推荐 GitHub 新仓库名：
+This project is structured to make the implementation easy to evaluate:
 
-```text
-ninebot-comfyui-lora-kit
-```
-
-这个名字覆盖范围比单纯 `flux-lora` 更准确，因为仓库里同时包含打标、旧版 LoRA 训练、FLUX LoRA 训练和图生图 workflow。
+- Source code, workflows, documentation, and training bundles are separated by responsibility.
+- Runtime-heavy assets are excluded so the repository remains reviewable and clone-friendly.
+- Tests focus on the custom node pipeline and frontend extension behaviors that are most likely to regress.
+- Documentation records setup assumptions, dependency boundaries, and migration decisions.
