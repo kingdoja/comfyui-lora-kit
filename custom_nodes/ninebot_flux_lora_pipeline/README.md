@@ -1,97 +1,67 @@
 # Ninebot FLUX LoRA Pipeline
 
-`NinebotFluxLoRATrainPipeline` combines image upload, caption sidecar preparation, FLUX LoRA training, and trained LoRA download into one ComfyUI node.
+`NinebotFluxLoRATrainPipeline` 是一个面向 ComfyUI 的 FLUX LoRA 编排节点：把多图上传、数据集暂存、caption sidecar、训练参数映射、FluxTrainer 调用、产物落盘和下载校验收敛到一条可观察的执行链路。
 
-The node is designed for the Ninebot FLUX LoRA workflow:
+## 为什么做成节点
 
-- Upload multiple training images in the node.
-- Uploading a new batch replaces the current `uploaded_images` list, so old dataset paths are not mixed into the next run.
-- Use `trigger_word` for caption and FluxTrainer `class_tokens`; choose a unique token such as `ninebot_xxx_style`, not a broad word like `car`, `vehicle`, or `motorcycle`.
-- Keep `dry_run` enabled for the first queue to verify upload and caption sidecars.
-- Disable `dry_run` to run the FluxTrainer chain.
-- Optionally connect `NinebotFluxLoRAAdvancedSettings` when tuning speed, memory, or quality.
-- Click the small download icon next to `output_lora_name` after training finishes.
+传统训练流程需要在文件管理器、caption 工具、命令行训练器和模型目录之间来回切换，容易出现旧数据串批、caption 与图片不匹配、训练产物找不到等问题。本节点将这些边界显式化：每次运行使用独立 `run_id`，上传新批次替换旧列表，训练前可用 `dry_run` 检查 staging 结果，完成后只允许下载已存在的 LoRA 文件。
 
-## Required Sibling Custom Nodes
+## 节点能力
 
-This package contains only the Ninebot wrapper node. The target ComfyUI also needs the training/caption custom nodes and their dependencies.
+| 能力 | 行为 |
+| --- | --- |
+| 多图上传 | 支持 PNG/JPG/JPEG/WEBP；新批次替换旧 `uploaded_images`，避免混入上一次数据 |
+| Caption sidecar | 默认生成包含 `trigger_word` 的同名 `.txt`，保留扩展 Florence2/WD14 adapter 的接口 |
+| Dry run | 只执行暂存、caption 和 manifest，不触发训练，适合首轮路径校验 |
+| FLUX 训练 | 将公开参数和 Advanced Settings 映射到已安装的 FluxTrainer 节点 |
+| 进度与错误 | 通过 ComfyUI node status 回传下载/训练状态，并对未完成或缺失文件返回明确错误 |
+| 产物下载 | 训练完成后在 `output_lora_name` 旁点击下载图标，后端只提供真实存在的 `.safetensors` |
 
-Copy these custom nodes when moving this node to another ComfyUI install:
+## 安装依赖
 
-- `custom_nodes/ninebot_flux_lora_pipeline`
-- `custom_nodes/ComfyUI-FluxTrainer`
-- `custom_nodes/ComfyUI-Florence2`
-- `custom_nodes/ComfyUI-WD14-Tagger`
-- `custom_nodes/ninebot_flux_lora_caption`
+本目录只包含 Ninebot wrapper，不 vendoring 训练器和模型。目标 ComfyUI 还需要：
 
-The current backend calls the installed FluxTrainer node classes through ComfyUI `NODE_CLASS_MAPPINGS`. Caption generation is adapter-based; the safe default writes trigger-only captions, and the package is structured so Florence2/WD14 caption adapters can be expanded without changing the public node UI.
+- `ComfyUI-FluxTrainer`
+- `ComfyUI-Florence2`（如果启用 Florence caption adapter）
+- `ComfyUI-WD14-Tagger`（如果启用 WD14 caption adapter）
+- `ninebot_flux_lora_caption`（独立 caption 适配节点，可选）
 
-## Required Model Files
+将本目录复制到目标 ComfyUI 的 `custom_nodes/` 后重启。模型文件清单和第三方许可证边界见仓库根目录 [THIRD_PARTY.md](../../THIRD_PARTY.md)。
 
-The default RTX4080-friendly FLUX training configuration expects:
+## 使用流程
 
-- `models/unet/flux1-dev.safetensors`
-- `models/vae/ae.safetensors`
-- `models/clip/clip_l.safetensors`
-- `models/clip/t5xxl_fp16.safetensors`
+1. 从 `Ninebot/FLUX LoRA` 分类添加 `NinebotFluxLoRATrainPipeline`。
+2. 在训练图片区一次性选择本轮数据；再次上传会替换旧列表。
+3. 设置唯一触发词，例如 `ninebot_motorcycle_style`，不要使用 `car`、`vehicle` 等泛词。
+4. 首次执行保持 `dry_run`，确认 staging 目录、`.txt` sidecar 和 manifest 正确。
+5. 需要调速或节省显存时，连接 `NinebotFluxLoRAAdvancedSettings`；默认路径优先保持 `bf16` + `sdpa`。
+6. 关闭 `dry_run` 后排队训练；完成后点击 `output_lora_name` 右侧下载图标。
 
-The default training settings are:
+## 默认参数（RTX 4080 16GB 参考）
 
-- rank and alpha: `8`
-- max train steps: `600`
-- learning rate: `0.0001`
-- optimizer: `adamw8bit`
-- cache latents: `memory`
-- cache text encoder outputs: `memory`
-- `fp8_base`: enabled
-- dtype: `bf16`
-- attention: `sdpa`
+- rank / alpha：`8`
+- max train steps：`600`
+- learning rate：`0.0001`
+- optimizer：`adamw8bit`
+- latent / text encoder cache：`memory`
+- `fp8_base`：enabled
+- gradient dtype：`bf16`
+- attention：`sdpa`
 
-## Optional Advanced Settings
+Advanced 节点只暴露 8 个高价值旋钮：`training_resolution`、`batch_size`、`num_repeats`、`blocks_to_swap`、`fp8_base`、`gradient_dtype`、`attention_mode`、`sample_prompts`。其中 `sample_prompts` 仅用于训练过程的验证预览，不会替代训练图片 caption。
 
-Use `NinebotFluxLoRAAdvancedSettings` only when you need to tune hidden FluxTrainer knobs. Click the small `advanced_settings` input socket on the left side of `NinebotFluxLoRATrainPipeline` to auto-create and connect the advanced node, or add it manually and connect its `advanced_settings` output.
+## 输出目录
 
-The advanced node intentionally exposes only 8 controls: `training_resolution`, `batch_size`, `num_repeats`, `blocks_to_swap`, `fp8_base`, `gradient_dtype`, `attention_mode`, and `sample_prompts`.
+```text
+user/ninebot_flux_lora_training/datasets/pipeline_uploads/<run_id>/style/
+  image_0001.png
+  image_0001.txt
+  _ninebot_pipeline_manifest.json
 
-Useful adjustments:
+output/ninebot_flux_lora_training/<output_lora_name>/
+models/loras/flux_trainer/<output_lora_name>.safetensors  # FluxTrainer copy mode 成功时
+```
 
-- Lower `training_resolution` or `max_train_steps` to reduce runtime.
-- Lower `blocks_to_swap` for speed if VRAM is enough; raise it to save VRAM when training fails or stalls.
-- Keep `gradient_dtype=bf16` and `attention_mode=sdpa` for the RTX4080 balanced path.
-- `network_alpha`, cache mode, gradient checkpointing, save dtype, optimizer, and scheduler stay on stable defaults in the backend.
-- Leave `sample_prompts` empty when you do not want to set validation preview prompts.
-- Fill `sample_prompts` when you want custom validation previews; separate multiple prompts with `|`.
+## 工程边界与测试
 
-`sample_prompts` are only for training-time validation previews. They are not the training image captions.
-
-## Usage
-
-1. Restart ComfyUI after installing or copying the node.
-2. Add `NinebotFluxLoRATrainPipeline` from `Ninebot/FLUX LoRA`.
-3. Click the training image area and upload PNG, JPG, JPEG, or WEBP images.
-   Uploading again replaces the previous image list; select all images for the new dataset in one batch.
-4. Click `触发词`, `输出 LoRA 名称`, `LoRA Rank`, `最大训练步数`, or `学习率` to edit values.
-5. Keep `试运行` on for the first run to verify dataset staging and `.txt` sidecars.
-6. Optional: click the left-side `advanced_settings` input socket to auto-add `NinebotFluxLoRAAdvancedSettings` for speed or memory tuning.
-7. Turn `试运行` off and queue the node to train.
-8. When training finishes, click the download icon next to `输出 LoRA 名称`.
-
-## Output Files
-
-Uploaded images are staged into:
-
-`user/ninebot_flux_lora_training/datasets/pipeline_uploads/<run_id>/style/`
-
-The node writes:
-
-- same-name `.txt` caption files
-- `_ninebot_pipeline_manifest.json`
-- FLUX LoRA output under `output/ninebot_flux_lora_training/<output_lora_name>/`
-- a copied LoRA under `models/loras/flux_trainer/` when FluxTrainer copy mode succeeds
-
-## Notes
-
-- The download route only serves existing `.safetensors` files.
-- If the download icon is clicked before training completes, the node shows a not-ready status.
-- If the LoRA file has been moved or deleted, the backend returns a clear file-not-found error.
-- The package intentionally does not vendor FluxTrainer, Florence2, or WD14 dependencies.
+节点负责 orchestration、输入校验、运行目录隔离、状态反馈和下载路由；实际优化算法由 FluxTrainer / sd-scripts 执行。仓库包含 pipeline/routes Python 单元测试，以及前端上传替换、内联编辑、LoRA 路径 payload 和 widget 隐藏测试。当前不宣称正式效果评测、多人并发队列或生产级任务调度。

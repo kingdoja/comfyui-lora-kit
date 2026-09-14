@@ -1,21 +1,11 @@
 # offroad_vehicle_caption_scratch_v001
 
-This dataset is for testing the automatic caption workflow.
-
-It intentionally contains only `.png` images at first. `LoRA Caption Save` should create matching `.txt` files beside each image.
-
-## Image Folder
+用于验证“图片 → WD14 标签 → caption sidecar”链路的最小数据集。初始只放 `.png`，由 `LoRA Caption Save` 创建与图片同名的 `.txt`。
 
 ```text
 10_ninebot_atv_style/
 ```
 
-## Use With
+对应 workflow：`workflows/ninebot_lora_training/lora_caption_mvp.workflow.json`。
 
-```text
-workflows/ninebot_lora_training/lora_caption_mvp.workflow.json
-```
-
-## Important
-
-If `.txt` files already exist in this folder, `LoRA Caption Save` can fail or skip names because the upstream node tries to avoid overwriting existing files. Delete the generated `.txt` files before rerunning caption generation.
+如果目录中已经存在生成过的 `.txt`，上游节点可能为避免覆盖而跳过文件。需要重新生成时，先备份并移除这些生成文件，再重新排队；生成后请人工复核触发词和主体描述。
